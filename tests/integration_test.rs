@@ -1,5 +1,8 @@
 use once_cell::sync::Lazy;
-use scheduler::{algos::*, Process};
+use scheduler::{
+    algos::{non_preemptive::*, preemptive::*},
+    Process,
+};
 
 static PROCESSES: Lazy<Vec<Process>> = Lazy::new(|| {
     vec![
