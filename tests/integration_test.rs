@@ -1,6 +1,6 @@
 use once_cell::sync::Lazy;
 use scheduler::{
-    algos::{non_preemptive::*, preemptive::*},
+    algos::{non_preemptive, preemptive},
     Process,
 };
 
@@ -14,8 +14,8 @@ static PROCESSES: Lazy<Vec<Process>> = Lazy::new(|| {
 });
 
 #[test]
-fn fcfs() {
-    use fcfs::first_come_first_serve;
+fn first_come_first_serve() {
+    use non_preemptive::fcfs::first_come_first_serve;
 
     let result = first_come_first_serve(PROCESSES.clone().iter_mut());
     assert_eq!(result.total_wait_time, 35);
@@ -25,8 +25,8 @@ fn fcfs() {
 }
 
 #[test]
-fn sjf() {
-    use sjf::shortest_job_first;
+fn shortest_job_first() {
+    use non_preemptive::sjf::shortest_job_first;
 
     let result = shortest_job_first(PROCESSES.clone().iter_mut());
     assert_eq!(result.total_wait_time, 29);
@@ -36,8 +36,8 @@ fn sjf() {
 }
 
 #[test]
-fn srtf() {
-    use srtf::shortest_remaining_time_first;
+fn shortest_remaining_time_first() {
+    use preemptive::srtf::shortest_remaining_time_first;
 
     let result = shortest_remaining_time_first(PROCESSES.clone().iter_mut());
     assert_eq!(result.total_wait_time, 18);
@@ -47,8 +47,8 @@ fn srtf() {
 }
 
 #[test]
-fn priority() {
-    use priority::highest_priority_first;
+fn highest_priority_first() {
+    use non_preemptive::priority::highest_priority_first;
 
     let result = highest_priority_first(PROCESSES.clone().iter_mut());
     assert_eq!(result.total_wait_time, 31);
@@ -58,10 +58,10 @@ fn priority() {
 }
 
 #[test]
-fn priority_preemptive() {
-    use priority_preemptive::highest_priority_first_preemptive;
+fn highest_priority_first_preemptive() {
+    use preemptive::priority::highest_priority_first;
 
-    let result = highest_priority_first_preemptive(PROCESSES.clone().iter_mut());
+    let result = highest_priority_first(PROCESSES.clone().iter_mut());
     assert_eq!(result.total_wait_time, 30);
     assert_eq!(result.average_wait_time, 7.5);
     assert_eq!(result.total_turnaround_time, 52);
@@ -70,7 +70,7 @@ fn priority_preemptive() {
 
 #[test]
 fn round_robin() {
-    use round_robin::round_robin;
+    use preemptive::round_robin::round_robin;
 
     let result = round_robin(PROCESSES.clone().iter_mut(), 2);
     assert_eq!(result.total_wait_time, 33);
