@@ -27,6 +27,7 @@ pub type ProcessList = Vec<Process>;
 
 #[derive(Default, Debug)]
 pub struct Process {
+    pub pid: usize,
     pub arrival_time: usize,
     pub burst_time: usize,
     pub exit_time: Option<usize>,
@@ -35,9 +36,16 @@ pub struct Process {
     progress: usize,
 }
 
+impl PartialEq for Process {
+    fn eq(&self, other: &Self) -> bool {
+        self.pid == other.pid
+    }
+}
+
 impl Process {
-    pub fn new(arrival_time: usize, burst_time: usize, priority: usize) -> Self {
+    pub fn new(pid: usize, arrival_time: usize, burst_time: usize, priority: usize) -> Self {
         Process {
+            pid,
             arrival_time,
             priority,
             burst_time,
@@ -71,6 +79,10 @@ impl Process {
 
     pub fn is_finished(&self) -> bool {
         matches!(self.state, ProcessState::Finished)
+    }
+
+    pub fn is_insystem(&self) -> bool {
+        !matches!(self.state, ProcessState::NotInSytstem)
     }
 
     pub fn is_ready(&self) -> bool {

@@ -1,6 +1,6 @@
 use crate::{Process, SchedulerResult};
 
-pub fn first_come_first_serve<'a, I>(processes: I) -> SchedulerResult
+pub fn highest_priority_first<'a, I>(processes: I) -> SchedulerResult
 where
     I: IntoIterator<Item = &'a mut Process>,
 {
@@ -10,7 +10,7 @@ where
         if let Some(process_to_run) = process_vec
             .iter_mut()
             .filter(|p| !p.is_finished() && (p.arrival_time <= tick))
-            .min_by_key(|p| p.arrival_time)
+            .min_by_key(|p| p.priority)
         {
             process_to_run.run_to_completion();
             tick += process_to_run.burst_time;
@@ -24,18 +24,18 @@ where
 }
 
 #[test]
-fn fcfs_test() {
-    use super::fcfs::*;
+fn priority_test() {
+    use super::priority::*;
     let mut processes = vec![
-        Process::new(0, 0, 10, 0),
-        Process::new(1, 1, 6, 0),
-        Process::new(2, 3, 2, 0),
-        Process::new(3, 5, 4, 0),
+        Process::new(0, 0, 10, 2),
+        Process::new(1, 1, 6, 5),
+        Process::new(2, 3, 2, 3),
+        Process::new(3, 5, 4, 1),
     ];
 
-    let result = first_come_first_serve(processes.iter_mut());
-    assert_eq!(result.total_wait_time, 35);
-    assert_eq!(result.average_wait_time, 8.75);
-    assert_eq!(result.total_turnaround_time, 57);
-    assert_eq!(result.average_turnaround_time, 14.25);
+    let result = highest_priority_first(processes.iter_mut());
+    assert_eq!(result.total_wait_time, 31);
+    assert_eq!(result.average_wait_time, 7.75);
+    assert_eq!(result.total_turnaround_time, 53);
+    assert_eq!(result.average_turnaround_time, 13.25);
 }
