@@ -24,20 +24,3 @@ where
     }
     Process::compute_result(process_vec)
 }
-
-#[test]
-fn priority_preemptive_test() {
-    use super::priority_preemptive::*;
-    let mut processes = vec![
-        Process::new(0, 0, 10, 2),
-        Process::new(1, 1, 6, 5),
-        Process::new(2, 3, 2, 3),
-        Process::new(3, 5, 4, 1),
-    ];
-
-    let result = highest_priority_first_preemptive(processes.iter_mut());
-    assert_eq!(result.total_wait_time, 30);
-    assert_eq!(result.average_wait_time, 7.5);
-    assert_eq!(result.total_turnaround_time, 52);
-    assert_eq!(result.average_turnaround_time, 13.0);
-}

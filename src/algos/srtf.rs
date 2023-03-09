@@ -24,20 +24,3 @@ where
     }
     Process::compute_result(process_vec)
 }
-
-#[test]
-fn srtf_test() {
-    use super::srtf::*;
-    let mut processes = vec![
-        Process::new(0, 0, 10, 0),
-        Process::new(1, 1, 6, 0),
-        Process::new(2, 3, 2, 0),
-        Process::new(3, 5, 4, 0),
-    ];
-
-    let result = shortest_remaining_time_first(processes.iter_mut());
-    assert_eq!(result.total_wait_time, 18);
-    assert_eq!(result.average_wait_time, 4.5);
-    assert_eq!(result.total_turnaround_time, 40);
-    assert_eq!(result.average_turnaround_time, 10.0);
-}

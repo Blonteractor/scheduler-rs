@@ -10,7 +10,7 @@ pub struct SchedulerResult {
     pub average_turnaround_time: f64,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum ProcessState {
     NotInSytstem,
     Ready,
@@ -25,7 +25,7 @@ impl Default for ProcessState {
 
 pub type ProcessList = Vec<Process>;
 
-#[derive(Default, Debug)]
+#[derive(Default, Debug, Clone)]
 pub struct Process {
     pub pid: usize,
     pub arrival_time: usize,

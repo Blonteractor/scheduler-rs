@@ -22,20 +22,3 @@ where
     }
     Process::compute_result(process_vec)
 }
-
-#[test]
-fn sjf_test() {
-    use super::sjf::*;
-    let mut processes = vec![
-        Process::new(0, 0, 10, 0),
-        Process::new(1, 1, 6, 0),
-        Process::new(2, 3, 2, 0),
-        Process::new(3, 5, 4, 0),
-    ];
-
-    let result = shortest_job_first(processes.iter_mut());
-    assert_eq!(result.total_wait_time, 29);
-    assert_eq!(result.average_wait_time, 7.25);
-    assert_eq!(result.total_turnaround_time, 51);
-    assert_eq!(result.average_turnaround_time, 12.75);
-}

@@ -22,20 +22,3 @@ where
     }
     Process::compute_result(process_vec)
 }
-
-#[test]
-fn fcfs_test() {
-    use super::fcfs::*;
-    let mut processes = vec![
-        Process::new(0, 0, 10, 0),
-        Process::new(1, 1, 6, 0),
-        Process::new(2, 3, 2, 0),
-        Process::new(3, 5, 4, 0),
-    ];
-
-    let result = first_come_first_serve(processes.iter_mut());
-    assert_eq!(result.total_wait_time, 35);
-    assert_eq!(result.average_wait_time, 8.75);
-    assert_eq!(result.total_turnaround_time, 57);
-    assert_eq!(result.average_turnaround_time, 14.25);
-}
