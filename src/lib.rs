@@ -1,7 +1,5 @@
 pub mod algos;
 
-use std::vec::Vec;
-
 #[derive(Default, Debug)]
 pub struct SchedulerResult {
     pub total_wait_time: usize,
@@ -22,8 +20,6 @@ impl Default for ProcessState {
         ProcessState::NotInSytstem
     }
 }
-
-pub type ProcessList = Vec<Process>;
 
 #[derive(Default, Debug, Clone)]
 pub struct Process {
