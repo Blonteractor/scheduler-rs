@@ -1,4 +1,12 @@
+use std::collections::VecDeque;
+
 pub mod algos;
+#[derive(Default, Debug, Clone)]
+pub struct GranttNode {
+    pub start: usize,
+    pub end: usize,
+    pub pid: usize,
+}
 
 #[derive(Default, Debug)]
 pub struct SchedulerResult {
@@ -6,6 +14,7 @@ pub struct SchedulerResult {
     pub average_wait_time: f64,
     pub total_turnaround_time: usize,
     pub average_turnaround_time: f64,
+    pub grantt_chart: VecDeque<GranttNode>,
 }
 
 #[derive(Debug, Clone)]
@@ -51,7 +60,11 @@ impl Process {
         }
     }
 
-    pub fn compute_result<'a, I>(processes: I) -> SchedulerResult
+    pub fn compute_result<'a, I>(
+        processes: I,
+        mut grantt_chart: VecDeque<GranttNode>,
+        minimize_chart: bool,
+    ) -> SchedulerResult
     where
         I: IntoIterator<Item = &'a mut Process>,
     {
@@ -65,12 +78,33 @@ impl Process {
             total_wait_time += process.wait_time().unwrap();
         }
 
-        SchedulerResult {
+        let mut result = SchedulerResult {
             total_wait_time,
             average_wait_time: total_wait_time as f64 / len as f64,
             total_turnaround_time,
             average_turnaround_time: total_turnaround_time as f64 / len as f64,
+            grantt_chart: VecDeque::default(),
+        };
+
+        if minimize_chart && !grantt_chart.is_empty() {
+            let mut minimized: VecDeque<GranttNode> = VecDeque::with_capacity(len);
+            minimized.push_back(grantt_chart.pop_front().unwrap());
+
+            while !grantt_chart.is_empty() {
+                let current = grantt_chart.pop_front().unwrap();
+                if minimized.back().unwrap().pid == current.pid {
+                    minimized.back_mut().unwrap().end = current.pid;
+                } else {
+                    minimized.push_back(current);
+                }
+            }
+            result.grantt_chart = minimized;
         }
+        else {
+            result.grantt_chart = grantt_chart;
+        }
+
+        result
     }
 
     pub fn is_finished(&self) -> bool {
