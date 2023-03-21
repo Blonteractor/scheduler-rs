@@ -1,6 +1,36 @@
 use std::collections::VecDeque;
 pub mod algos;
 
+#[macro_export]
+macro_rules! run {
+    //Non-Preemptive
+    ($p:ident, $g:ident, $t:ident) => {
+        let mut node = GranttNode::default();
+        node.pid = $p.pid;
+        node.start = $t;
+
+        $p.run_to_completion();
+        $t += $p.burst_time;
+
+        node.end = $t;
+        $p.exit_time = Some($t);
+        $g.push_back(node);
+    };
+
+    //Preemptive
+    ($p:ident, $g:ident, $t:ident, $q:expr) => {
+        let mut node = GranttNode::default();
+        node.pid = $p.pid;
+        node.start = $t;
+
+        $p.run_for($q);
+        $t += $q;
+
+        node.end = $t;
+        $g.push_back(node);
+    };
+}
+
 #[derive(Default, Debug, Clone)]
 pub struct GranttNode {
     pub start: usize,
@@ -99,8 +129,7 @@ impl Process {
                 }
             }
             result.grantt_chart = minimized;
-        }
-        else {
+        } else {
             result.grantt_chart = grantt_chart;
         }
 

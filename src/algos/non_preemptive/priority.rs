@@ -1,6 +1,6 @@
 use std::collections::VecDeque;
 
-use crate::{run, Process, SchedulerResult, GranttNode};
+use crate::{run, GranttNode, Process, SchedulerResult};
 
 pub fn highest_priority_first<'a, I>(processes: I) -> SchedulerResult
 where

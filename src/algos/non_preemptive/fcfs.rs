@@ -1,6 +1,6 @@
 use std::collections::VecDeque;
 
-use crate::{Process, SchedulerResult, GranttNode, run};
+use crate::{run, GranttNode, Process, SchedulerResult};
 
 pub fn first_come_first_serve<'a, I>(processes: I) -> SchedulerResult
 where

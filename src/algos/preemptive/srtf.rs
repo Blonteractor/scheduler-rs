@@ -1,6 +1,6 @@
 use std::collections::VecDeque;
 
-use crate::{Process, SchedulerResult, GranttNode, run_preemptive};
+use crate::{run, GranttNode, Process, SchedulerResult};
 
 pub fn shortest_remaining_time_first<'a, I>(processes: I) -> SchedulerResult
 where
@@ -16,14 +16,14 @@ where
             .filter(|p| !p.is_finished() && (p.arrival_time <= tick))
             .min_by_key(|p| p.time_to_complete())
         {
-            run_preemptive!(process_to_run, grantt_chart, tick);
+            run!(process_to_run, grantt_chart, tick, 1);
             if process_to_run.is_finished() {
                 process_to_run.exit_time = Some(tick);
             }
         } else {
             tick += 1;
             continue;
-        } 
+        }
     }
     Process::compute_result(process_vec, grantt_chart, true)
 }

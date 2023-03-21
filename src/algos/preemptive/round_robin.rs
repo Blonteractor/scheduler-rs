@@ -1,6 +1,6 @@
 use std::collections::VecDeque;
 
-use crate::{Process, ProcessState, SchedulerResult, GranttNode, run_preemptive};
+use crate::{run, GranttNode, Process, ProcessState, SchedulerResult};
 
 pub fn round_robin<'a, I>(processes: I, quantum: usize) -> SchedulerResult
 where
@@ -35,7 +35,7 @@ where
 
         process_to_run = &mut process_vec[waiting_queue.pop_front().unwrap()];
         process_to_run.state = ProcessState::NotInSytstem;
-        run_preemptive!(process_to_run, grantt_chart, tick, quantum);
+        run!(process_to_run, grantt_chart, tick, quantum);
 
         if process_to_run.is_finished() {
             process_to_run.exit_time = Some(tick);
