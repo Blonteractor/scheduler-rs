@@ -1,6 +1,6 @@
 use std::collections::VecDeque;
 
-use crate::{Process, SchedulerResult, GranttNode};
+use crate::{Process, SchedulerResult, GranttNode, run_preemptive};
 
 pub fn highest_priority_first<'a, I>(processes: I) -> SchedulerResult
 where
@@ -15,18 +15,10 @@ where
             .filter(|p| !p.is_finished() && (p.arrival_time <= tick))
             .min_by_key(|p| p.priority)
         {
-            let mut node = GranttNode::default();
-            node.pid = process_to_run.pid;
-            node.start = tick;
-
-            process_to_run.run_once();
-            tick += 1;
+            run_preemptive!(process_to_run, grantt_chart, tick);
             if process_to_run.is_finished() {
                 process_to_run.exit_time = Some(tick);
             }
-
-            node.end = tick;
-            grantt_chart.push_back(node);
         } else {
             tick += 1;
             continue;

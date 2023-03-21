@@ -1,6 +1,6 @@
 use std::collections::VecDeque;
 
-use crate::{Process, ProcessState, SchedulerResult, GranttNode};
+use crate::{Process, ProcessState, SchedulerResult, GranttNode, run_preemptive};
 
 pub fn round_robin<'a, I>(processes: I, quantum: usize) -> SchedulerResult
 where
@@ -33,16 +33,9 @@ where
             last_unfinished_process_id = None;
         }
 
-        let mut node = GranttNode::default();
         process_to_run = &mut process_vec[waiting_queue.pop_front().unwrap()];
-        node.pid = process_to_run.pid;
-        node.start = tick;
         process_to_run.state = ProcessState::NotInSytstem;
-        
-        process_to_run.run_for(quantum);
-        tick += quantum;
-        node.end = tick;
-        grantt_chart.push_back(node);
+        run_preemptive!(process_to_run, grantt_chart, tick, quantum);
 
         if process_to_run.is_finished() {
             process_to_run.exit_time = Some(tick);

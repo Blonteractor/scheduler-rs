@@ -1,6 +1,6 @@
 use std::collections::VecDeque;
-
 pub mod algos;
+
 #[derive(Default, Debug, Clone)]
 pub struct GranttNode {
     pub start: usize,

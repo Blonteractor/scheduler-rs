@@ -1,6 +1,6 @@
 use std::collections::VecDeque;
 
-use crate::{Process, SchedulerResult, GranttNode};
+use crate::{run, Process, SchedulerResult, GranttNode};
 
 pub fn shortest_job_first<'a, I>(processes: I) -> SchedulerResult
 where
@@ -15,16 +15,7 @@ where
             .filter(|p| !p.is_finished() && (p.arrival_time <= tick))
             .min_by_key(|p| p.burst_time)
         {
-            let mut node = GranttNode::default();
-            node.pid = process_to_run.pid;
-            node.start = tick;
-
-            process_to_run.run_to_completion();
-            tick += process_to_run.burst_time;
-            node.end = tick;
-
-            process_to_run.exit_time = Some(tick);
-            grantt_chart.push_back(node);
+            run!(process_to_run, grantt_chart, tick);
         } else {
             tick += 1;
             continue;
